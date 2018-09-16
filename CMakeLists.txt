@@ -453,3 +453,49 @@ target_link_libraries(cen64
   ${CMAKE_THREAD_LIBS_INIT}
 )
 
+include(ExternalProject)
+
+link_directories(${CMAKE_BINARY_DIR}/mipt)
+
+ExternalProject_Add(mipt-mips
+    GIT_REPOSITORY https://github.com/mipt-ilab/mipt-mips
+    SOURCE_SUBDIR simulator
+    STEP_TARGETS builds
+    BINARY_DIR ${CMAKE_BINARY_DIR}/mipt
+    INSTALL_COMMAND cmake -E echo "Skipping install step."
+    EXCLUDE_FROM_ALL TRUE
+)
+
+add_executable(mipt-mips-cen64
+  ${EXTRA_OS_EXE}
+  ${ASM_SOURCES}
+  ${AI_SOURCES}
+  ${ARCH_X86_64_SOURCES}
+  ${BUS_SOURCES}
+  ${COMMON_SOURCES}
+  ${DD_SOURCES}
+  ${DEVICE_SOURCES}
+  ${OS_SOURCES}
+  ${PI_SOURCES}
+  ${RDP_SOURCES}
+  ${RI_SOURCES}
+  ${RSP_SOURCES}
+  ${SI_SOURCES}
+  ${VI_SOURCES}
+)
+
+add_dependencies(mipt-mips-cen64 mipt-mips)
+set(CMAKE_CXX_LINK_EXECUTABLE  ${CMAKE_C_LINK_EXECUTABLE})
+set_target_properties(mipt-mips-cen64 PROPERTIES LINKER_LANGUAGE CXX)
+
+target_link_libraries(mipt-mips-cen64
+  ${EXTRA_OS_LIBS}
+  ${OPENAL_LIBRARY}
+  ${OPENGL_gl_LIBRARY}
+  ${ICONV_LIBRARIES}
+  ${X11_X11_LIB}
+  ${CMAKE_THREAD_LIBS_INIT}
+  mipt-mips-cen64-intf
+  mipt-mips-src
+  stdc++
+)
