@@ -34,6 +34,7 @@ addons:
     - libgl1-mesa-dev
     - libpulse-dev
     - libalut-dev
+    - libboost-dev
 
 before_script:
   - mkdir release && cd release
